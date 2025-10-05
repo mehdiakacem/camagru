@@ -120,7 +120,42 @@ camagru/
 
 ---
 
-## 🔐 4. Security Requirements
+## 🧰 4. Getting Started
+
+### 🔹 Prerequisites
+Make sure you have:
+- Docker & Docker Compose installed  
+- A modern browser (Firefox ≥ 41 or Chrome ≥ 46)  
+
+### 🔹 Installation
+```bash
+# Clone repository
+git clone https://github.com/yourusername/camagru.git
+cd camagru
+
+# Build and start containers
+docker-compose up --build
+
+# Access the app
+http://localhost:8080
+```
+
+### 🔹 Environment variables
+Create a `.env` file in the root directory:
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=password
+DB_NAME=camagru
+MAIL_HOST=smtp.example.com
+MAIL_USER=example@example.com
+MAIL_PASS=secret
+```
+*(Ensure `.env` is added to `.gitignore`)*
+
+---
+
+## 🔐 5. Security Requirements
 Mandatory (from subject):
 - Encrypted passwords (e.g., `password_hash()` / `bcrypt`).
 - Input validation and escaping (prevent XSS, CSRF, SQLi).
@@ -130,7 +165,7 @@ Mandatory (from subject):
 
 ---
 
-## 🌐 5. Features Summary
+## 🌐 6. Features Summary
 
 ### ✅ Common
 - Responsive layout (header, main, footer).
@@ -156,29 +191,20 @@ Mandatory (from subject):
 
 ---
 
-## ⚡ 6. Deployment
+## 🧱 7. Project Architecture
 
-### 🐳 With Docker
-```bash
-docker-compose up --build
 ```
-
-### 🌍 Environment variables
-Create a `.env` file:
+Client (HTML, CSS, JS)
+    ↓
+PHP Controller (MVC)
+    ↓
+Database (MySQL)
 ```
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=password
-DB_NAME=camagru
-MAIL_HOST=smtp.example.com
-MAIL_USER=example@example.com
-MAIL_PASS=secret
-```
-*(Make sure `.env` is in `.gitignore`)*
+A simple MVC-like structure ensures maintainability and separation of concerns.
 
 ---
 
-## 🧠 7. Tools Used for Planning
+## 🧠 8. Tools Used for Planning
 
 | Purpose | Recommended Tools |
 |----------|-------------------|
@@ -191,15 +217,42 @@ MAIL_PASS=secret
 
 ---
 
-## 🚀 8. Possible Bonus Features
-- Live preview of overlays (client-side).
-- Infinite scroll gallery.
-- Share to social media.
-- Render edited GIFs.
-- AJAX for smoother user experience.
+## 🖼️ 9. Preview
+
+| Page | Screenshot |
+|------|-------------|
+| Home | ![Home](docs/screenshots/home.png) |
+| Editor | ![Editor](docs/screenshots/editor.png) |
+| Gallery | ![Gallery](docs/screenshots/gallery.png) |
+| Profile | ![Profile](docs/screenshots/profile.png) |
+
+*(Add screenshots once pages are functional.)*
 
 ---
 
-## 🧾 9. Author & License
-Created by **[Your Name]** as part of the **Camagru project** (42 curriculum).  
-Free to use and modify under the MIT License.
+## 🤝 10. Contributing
+
+Contributions are welcome!  
+If you’d like to propose changes, please:
+1. Fork the repository  
+2. Create a new branch (`feature/my-feature`)  
+3. Commit your changes and push the branch  
+4. Open a Pull Request  
+
+---
+
+## 🔮 11. Future Improvements
+
+- Dark mode and theme switcher  
+- Infinite scrolling in gallery  
+- Live preview of overlays (client-side)  
+- Sharing to social networks  
+- Render animated GIFs  
+- Unit tests for controllers  
+
+---
+
+## 🧾 12. Author & License
+
+Created by **Mehdi Akacem** — part of the **42 Network Camagru project**.  
+Free to use and modify under the **MIT License**.
