@@ -1,19 +1,12 @@
 <?php
-$host = getenv('DB_HOST');
-$dbname = getenv('DB_NAME');
-$user = getenv('DB_USER');
-$pass = getenv('DB_PASS');
 
-try {
-    $pdo = new PDO("mysql:dbname=$dbname;host=$host", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
+include __DIR__ . '/../includes/autoload.php';
 
-    $query = $pdo->query('SHOW VARIABLES LIKE "version"');
-    $row = $query->fetch();
+$uri = strtok(ltrim($_SERVER['REQUEST_URI'], '/'), '?');
 
-    echo '✅ Connected successfully<br>';
-    echo 'MySQL version: ' . htmlspecialchars($row['Value']);
-} catch (PDOException $e) {
-    echo '❌ Connection failed: ' . htmlspecialchars($e->getMessage());
-}
+echo $uri;
+
+$camagruWebsite = new CamagruWebsite;
+$entryPoint = new \Core\EntryPoint($camagruWebsite);
+$entryPoint->run($uri, $_SERVER['REQUEST_METHOD']);
+
