@@ -30,7 +30,7 @@ The site targets:
 - To **create** and share custom photo edits.
 - To **explore** other users’ creations.
 - To **interact** via likes and comments.
-- To **practice** or **showcase** their technical skills (if developers).
+- To **practice** or **showcase** my technical skills.
 
 ### 🧠 What visitors are trying to achieve
 - Sign up, log in, and manage their profile.
@@ -75,7 +75,7 @@ Home
 - **Editor Page:** webcam preview + overlay selector + capture button + saved images.
 - **Profile Page:** form for editing info, password, and notification settings.
 
-*(Wireframes can be made in Figma, Balsamiq, or even on paper.)*
+![alt text](sitemap.png)
 
 ### 🎨 Design Principles
 - **Responsive layout:** adapts to desktop, tablet, and mobile.
