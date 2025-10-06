@@ -130,7 +130,7 @@ Make sure you have:
 ### 🔹 Installation
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/camagru.git
+git clone https://github.com/mehdiakacem/camagru.git
 cd camagru
 
 # Build and start containers
@@ -201,19 +201,6 @@ PHP Controller (MVC)
 Database (MySQL)
 ```
 A simple MVC-like structure ensures maintainability and separation of concerns.
-
----
-
-## 🧠 8. Tools Used for Planning
-
-| Purpose | Recommended Tools |
-|----------|-------------------|
-| Personas & Goals | Notion, Google Docs |
-| User Flow & Sitemap | Miro, FlowMapp, Lucidchart |
-| Wireframes | Figma, Balsamiq |
-| Design System | Figma, Coolors, Google Fonts |
-| Project Management | Trello, Notion |
-| Documentation | Markdown, GitHub README |
 
 ---
 
