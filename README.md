@@ -75,7 +75,7 @@ Home
 - **Editor Page:** webcam preview + overlay selector + capture button + saved images.
 - **Profile Page:** form for editing info, password, and notification settings.
 
-![alt text](sitemap.png)
+![alt text](wireframes.png)
 
 ### 🎨 Design Principles
 - **Responsive layout:** adapts to desktop, tablet, and mobile.
