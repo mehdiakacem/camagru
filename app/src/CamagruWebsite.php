@@ -4,7 +4,7 @@ class CamagruWebsite implements \Core\Website
 {
     private \Core\Authentication $authentication;
     private ?\Core\Model $authorsTable;
-    // private ?\Ninja\DatabaseTable $jokesTable;
+    private ?\Core\Model $imagesModel;
     // private ?\Ninja\DatabaseTable $categoriesTable;
     // private ?\Ninja\DatabaseTable $jokeCategoriesTable;
 
@@ -36,13 +36,13 @@ class CamagruWebsite implements \Core\Website
         );
         $this->authentication = new \Core\Authentication($this->authorsTable, 'email', 'password');
 
-        // $this->jokesTable = new \Ninja\DatabaseTable(
-        //     $pdo,
-        //     'joke',
-        //     'id',
-        //     '\Ijdb\Entity\Joke',
-        //     [&$this->authorsTable, &$this->jokeCategoriesTable]
-        // );
+        $this->imagesModel = new \Core\Model(
+            $pdo,
+            'images',
+            'id',
+            '\Models\Images',
+            []
+        );
         // $this->categoriesTable = new \Ninja\DatabaseTable(
         //     $pdo,
         //     'category',
@@ -67,17 +67,13 @@ class CamagruWebsite implements \Core\Website
 
     public function getController(string $controllerName): ?object
     {
-        // $controllers = [
-        //     'joke' => new \Ijdb\Controllers\Joke(
-        //         $this->jokesTable,
-        //         $this->authorsTable,
-        //         $this->categoriesTable,
-        //         $this->authentication
-        //     ),
-        //     'author' => new \Ijdb\Controllers\Author($this->authorsTable),
-        //     'login' => new \Ijdb\Controllers\Login($this->authentication),
-        //     'category' => new \Ijdb\Controllers\Category($this->categoriesTable)
-        // ];
+        $controllers = [
+            'images' => new Controllers\ImagesController(
+                $this->imagesModel,
+            ),
+            // 'author' => new \Ijdb\Controllers\Author($this->authorsTable),
+            // 'login' => new \Ijdb\Controllers\Login($this->authentication),
+        ];
 
         return $controllers[$controllerName] ?? null;
     }

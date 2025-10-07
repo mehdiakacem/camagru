@@ -1,18 +1,16 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="/css/index.css">
     <title><?= $title ?></title>
 </head>
-
 <body>
     <nav>
         <div class="nav-container">
             <a href="/" class="logo">Camagru</a>
             <ul class="nav-menu">
-                <li><a href="/joke/list">Gallery</a></li>
+                <li><a href="/images/list">Gallery</a></li>
                 <!-- <li><a href="/joke/list">Editor</a></li>
                 <li><a href="/joke/list">Profile</a></li> -->
 

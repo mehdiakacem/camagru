@@ -17,36 +17,33 @@ class EntryPoint
 
                 $variables = $page['variables'] ?? [];
                 $output = $this->loadView('home.php', []);
-            }
-            else {
-
-                
+            } else {
                 $route = explode('/', $uri);
 
-            $controllerName = array_shift($route);
-            $action = array_shift($route);
-            
-            $this->website->checkLogin($controllerName . '/' . $action);
-            
-            if ($method === 'POST') {
-                $action .= 'Submit';
-            }
+                $controllerName = array_shift($route);
+                $action = array_shift($route);
 
-            $controller = $this->website->getController($controllerName);
-            
-            if (is_callable([$controller, $action])) {
-                $page = $controller->$action(...$route);
-                
-                $title = $page['title'];
-                
-                $variables = $page['variables'] ?? [];
-                $output = $this->loadView($page['template'], $variables);
-            } else {
-                http_response_code(404);
-                $title = 'Not found';
-                $output = 'Sorry, the page you are looking for could  not be found.';
+                $this->website->checkLogin($controllerName . '/' . $action);
+
+                if ($method === 'POST') {
+                    $action .= 'Submit';
+                }
+
+                $controller = $this->website->getController($controllerName);
+
+                if (is_callable([$controller, $action])) {
+                    $page = $controller->$action(...$route);
+
+                    $title = $page['title'];
+
+                    $variables = $page['variables'] ?? [];
+                    $output = $this->loadView($page['view'], $variables);
+                } else {
+                    http_response_code(404);
+                    $title = 'Not found';
+                    $output = 'Sorry, the page you are looking for could  not be found.';
+                }
             }
-        }
         } catch (\PDOException $e) {
             $title = 'An error has occurred';
 
