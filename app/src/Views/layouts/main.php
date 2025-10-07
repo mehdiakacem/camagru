@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/auth.css">
     <title><?= $title ?></title>
 </head>
 <body>

@@ -2,7 +2,7 @@
 
 namespace Models;
 
-class Images
+class Image
 {
     public int $id;
     public string $image_path;
