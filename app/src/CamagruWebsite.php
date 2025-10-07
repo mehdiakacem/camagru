@@ -71,8 +71,8 @@ class CamagruWebsite implements \Core\Website
             'images' => new Controllers\ImagesController(
                 $this->imagesModel,
             ),
+            'auth' => new Controllers\AuthController($this->authentication),
             // 'author' => new \Ijdb\Controllers\Author($this->authorsTable),
-            // 'login' => new \Ijdb\Controllers\Login($this->authentication),
         ];
 
         return $controllers[$controllerName] ?? null;

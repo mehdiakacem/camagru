@@ -19,7 +19,7 @@
                 <?php if ($loggedIn): ?>
                     <li class="logout"><a href="/login/logout">Log out</a></li>
                 <?php else: ?>
-                    <li class="login"><a href="/login/login">Log in</a></li>
+                    <li class="login"><a href="/auth/login">Log in</a></li>
                 <?php endif; ?>
 
             </ul>
