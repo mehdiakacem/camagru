@@ -138,6 +138,11 @@ docker-compose up --build
 
 # Access the app
 http://localhost:8080
+
+## Email Configuration
+
+### Development (Default)
+Uses MailHog - all emails visible at http://localhost:8025
 ```
 
 ### 🔹 Environment variables
