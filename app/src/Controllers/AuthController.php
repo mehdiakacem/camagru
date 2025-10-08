@@ -54,21 +54,62 @@ class AuthController
         }
 
         $passwordValidation = \Core\PasswordValidator::validate($user['password']);
-        
+
         if ($passwordValidation['valid'] !== true) {
             $errors = array_merge($errors, $passwordValidation['errors']);
         }
 
-        // If there are no errors, proceed with saving the record in the database
         if (count($errors) === 0) {
-            // Hash the password before saving it in the database
+            // Hash password
             $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
 
-            // When submitted, the $user variable now contains a lowercase value for email
-            // and a hashed password
+            // Generate unique verification token
+            $user['verification_token'] = bin2hex(random_bytes(32)); // 64 character token
+
+            // Set token expiration (24 hours from now)
+            $user['token_expires_at'] = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
+            // Insert user into database (unverified)
             $this->usersModel->save($user);
 
-            header('Location: /auth/success');
+            // Get base URL from environment or auto-detect
+            $base_url = $_ENV['APP_URL'] ?? 'http://localhost';
+            // Send verification email
+            $verification_link = $base_url . "/auth/verify/"
+                . $user['verification_token'];
+
+            $to = $user['email'];
+            $subject = "Verify your Camagru account";
+            $message = "
+                <html>
+                <head>
+                    <title>Verify Your Account</title>
+                </head>
+                <body>
+                    <h2>Welcome to Camagru, {$user['name']}!</h2>
+                    <p>Please click the link below to verify your email address:</p>
+                    <p><a href='{$verification_link}'>Verify My Account</a></p>
+                    <p>Or copy and paste this link into your browser:</p>
+                    <p>{$verification_link}</p>
+                    <p>This link will expire in 24 hours.</p>
+                    <p>If you did not create this account, please ignore this email.</p>
+                </body>
+                </html>
+            ";
+
+            // Headers for HTML email
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-Type: text/html;charset=UTF-8" . "\r\n";
+            $headers .= "From: noreply@camagru.com" . "\r\n";
+
+            // Send email
+            // mail($to, $subject, $message, $headers);
+            if (mail($to, $subject, $message, $headers)) {
+                header('Location: /auth/success');
+                exit();
+            } else {
+                throw new \Exception("Failed to send verification email");
+            }
         } else {
             // If the data is not valid, show the form again
             return [
