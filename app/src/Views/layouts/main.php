@@ -31,7 +31,7 @@
     </main>
     <footer>
         <div class="footer-bottom">
-            <p>&copy; 2025 Camagru. All rights reserved.</p>
+            <p>&copy; 2025 Camagru</p>
         </div>
     </footer>
 </body>

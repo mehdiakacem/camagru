@@ -31,9 +31,8 @@ class CamagruWebsite implements \Core\Website
             $pdo,
             'users',
             'id',
-            '\Models\Users',
-            [],
-            // [&$this->jokesTable]
+            '\Models\User',
+            [&$this->imagesModel]
         );
         $this->authentication = new \Core\Authentication($this->usersModel, 'email', 'password');
 

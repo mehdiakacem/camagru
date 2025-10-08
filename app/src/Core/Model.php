@@ -4,7 +4,13 @@ namespace Core;
 
 class Model
 {
-    public function __construct(private \PDO $pdo, private string $table, private string $primaryKey, private string $className = '\stdClass', private array $constructorArgs = []) {}
+    public function __construct(
+        private \PDO $pdo,
+        private string $table,
+        private string $primaryKey,
+        private string $className = '\stdClass',
+        private array $constructorArgs = []
+    ) {}
 
     public function find(string $column, string $value, $orderBy = null, int $limit = 0)
     {

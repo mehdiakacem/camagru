@@ -15,6 +15,8 @@ class User
     public string $name;
     public string $email;
     public string $password;
+    public bool $is_verified;
+
     public ?int $permissions;
 
     public function __construct(private \Core\Model $imagesModel) {}

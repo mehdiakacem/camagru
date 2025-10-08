@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Core\Model;
+use PasswordValidator;
 
 class AuthController
 {
@@ -19,42 +20,43 @@ class AuthController
         ];
     }
 
-    public function register()
+    public function signup()
     {
         return [
-            'view' => 'auth/register.php',
-            'title' => 'Register'
+            'view' => 'auth/signup.php',
+            'title' => 'Sign Up'
         ];
     }
 
-    public function registerSubmit()
+    public function signupSubmit()
     {
         $user = $_POST['user'];
-
-        // Start with an empty array
         $errors = [];
-
-        // But if any of the fields have been left blank, write an error to the array
-        if (empty($user['name'])) {
-            $errors[] = 'Username cannot be blank';
-        }
 
         if (empty($user['email'])) {
             $errors[] = 'Email cannot be blank';
         } else if (filter_var($user['email'], FILTER_VALIDATE_EMAIL) == false) {
             $errors[] = 'Invalid email address';
-        } else { // If the email is not blank and valid:
-            // convert the email to lowercase
+        } else {
             $user['email'] = strtolower($user['email']);
-
-            // Search for the lowercase version of $user['email']
             if (count($this->usersModel->find('email', $user['email'])) > 0) {
                 $errors[] = 'That email address is already registered';
             }
         }
 
-        if (empty($user['password'])) {
-            $errors[] = 'Password cannot be blank';
+        if (empty($user['name'])) {
+            $errors[] = 'Username cannot be blank';
+        } else {
+
+            if (count($this->usersModel->find('name', $user['name'])) > 0) {
+                $errors[] = 'That username is already registered';
+            }
+        }
+
+        $passwordValidation = \Core\PasswordValidator::validate($user['password']);
+        
+        if ($passwordValidation['valid'] !== true) {
+            $errors = array_merge($errors, $passwordValidation['errors']);
         }
 
         // If there are no errors, proceed with saving the record in the database
@@ -66,18 +68,26 @@ class AuthController
             // and a hashed password
             $this->usersModel->save($user);
 
-            header('Location: /user/success');
+            header('Location: /auth/success');
         } else {
             // If the data is not valid, show the form again
             return [
-                'view' => 'auth/register.php',
-                'title' => 'Register',
+                'view' => 'auth/signup.php',
+                'title' => 'Sign Up',
                 'variables' => [
                     'errors' => $errors,
                     'user' => $user
                 ]
             ];
         }
+    }
+
+    public function success()
+    {
+        return [
+            'view' => 'auth/success.php',
+            'title' => 'Registration Successful'
+        ];
     }
 
     public function loginSubmit()

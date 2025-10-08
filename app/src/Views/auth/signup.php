@@ -1,4 +1,3 @@
-<h2>Register</h2>
 <form action="" method="post">
     <label for="email">Email</label>
     <input name="user[email]" id="email" type="text" value="<?= $user['email'] ?? '' ?>">
@@ -9,7 +8,7 @@
     <label for="password">Password</label>
     <input name="user[password]" id="password" type="password" value="<?= $user['password'] ?? '' ?>">
 
-    <input type="submit" name="submit" value="Register account">
+    <input type="submit" name="submit" value="Sign up">
     <?php
     if (!empty($errors)) :
     ?>

@@ -3,7 +3,6 @@ if (isset($errorMessage)):
     echo '<div class="errors">Sorry, your username and password could not be found.</div>';
 endif;
 ?>
-<h2>Login</h2>
 <form method="post" action="">
     <label for="username">Username</label>
     <input type="text" id="username" name="username">
@@ -14,4 +13,4 @@ endif;
     <input type="submit" name="login" value="Log in">
 </form>
 
-<p>Don't have an account? <a class="register" href="/auth/register">Click here to register</a></p>
+<p><a class="register" href="/auth/signup">Sign up</a></p>
