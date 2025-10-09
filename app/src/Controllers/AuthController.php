@@ -66,9 +66,6 @@ class AuthController
             // Generate unique verification token
             $user['verification_token'] = bin2hex(random_bytes(32)); // 64 character token
 
-            // Set token expiration (24 hours from now)
-            $user['token_expires_at'] = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
             // Insert user into database (unverified)
             $this->usersModel->save($user);
 
@@ -128,6 +125,53 @@ class AuthController
         return [
             'view' => 'auth/success.php',
             'title' => 'Registration Successful'
+        ];
+    }
+
+    public function verify(string $token)
+    {
+        if (!$token) {
+            return [
+                'view' => 'auth/verify/result.php',
+                'title' => 'Verification Failed',
+                'variables' => [
+                    'success' => false,
+                    'message' => 'Invalid verification link. No token provided.'
+                ]
+            ];
+        }
+
+        $users = $this->usersModel->find('verification_token', $token);
+
+        if (count($users) === 0) {
+            return [
+                'view' => 'auth/verify/result.php',
+                'title' => 'Verification Failed',
+                'variables' => [
+                    'success' => false,
+                    'message' => 'Invalid verification token. 
+                                This link may have already been used.'
+                ]
+            ];
+        }
+
+        $user = $users[0];
+
+        // Mark user as verified
+        $user->is_verified = true;
+        $user->verification_token = null; // Clear the token
+
+        $this->usersModel->save((array)$user);
+
+        return [
+            'view' => 'auth/verify/result.php',
+            'title' => 'Verification Successful',
+            'variables' => [
+                'success' => true,
+                'message' => 'Your email has been verified successfully! 
+                                You can now log in to your account.',
+                'username' => $user->name
+            ]
         ];
     }
 

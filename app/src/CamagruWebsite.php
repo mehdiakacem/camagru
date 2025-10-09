@@ -32,7 +32,7 @@ class CamagruWebsite implements \Core\Website
             'users',
             'id',
             '\Models\User',
-            [&$this->imagesModel]
+            []
         );
         $this->authentication = new \Core\Authentication($this->usersModel, 'email', 'password');
 
