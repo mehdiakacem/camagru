@@ -177,19 +177,33 @@ class AuthController
 
     public function loginSubmit()
     {
-        $success = $this->authentication->login($_POST['email'], $_POST['password']);
+        $success = $this->authentication->login($_POST['name'], $_POST['password']);
 
         if ($success) {
+            $user = $this->usersModel->find('name', strtolower($_POST['name']))[0];
+            if (!$user->is_verified) {
+                $this->authentication->logout();
+                return [
+                    'view' => 'auth/login.php',
+                    'title' => 'Log in',
+                    'variables' => [
+                        'errorMessage' => 'Please verify your email before logging in.'
+                    ]
+                ];
+            }
             return [
-                'view' => 'loginSuccess.html.php',
-                'title' => 'Log In Successful'
+                'view' => 'auth/success.php',
+                'title' => 'Log In Successful',
+                'variables' => [
+                    'login' => true,
+                ]
             ];
         } else {
             return [
-                'view' => 'loginForm.html.php',
+                'view' => 'auth/login.php',
                 'title' => 'Log in',
                 'variables' => [
-                    'errorMessage' => true
+                    'errorMessage' => 'Sorry, your username and password could not be found.'
                 ]
             ];
         }

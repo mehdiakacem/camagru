@@ -18,7 +18,7 @@
                 <!-- <li><a href="/joke/edit">Add a new Joke</a></li> -->
 
                 <?php if ($loggedIn): ?>
-                    <li class="logout"><a href="/login/logout">Log out</a></li>
+                    <li class="logout"><a href="/auth/logout">Log out</a></li>
                 <?php else: ?>
                     <li class="login"><a href="/auth/login">Log in</a></li>
                 <?php endif; ?>
