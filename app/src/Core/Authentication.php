@@ -4,7 +4,6 @@ namespace Core;
 
 class Authentication
 {
-
     public function __construct(private Model $users, private string $usernameColumn, private string $passwordColumn)
     {
         session_start();
@@ -13,7 +12,6 @@ class Authentication
     public function login(string $username, string $password): bool
     {
         $user = $this->users->find($this->usernameColumn, strtolower($username));
-
         if (!empty($user) && password_verify($password, $user[0]->{$this->passwordColumn})) {
             session_regenerate_id();
             $_SESSION['username'] = $username;

@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/auth.css">
     <title><?= $title ?></title>
 </head>
+
 <body>
     <nav>
         <div class="nav-container">
@@ -18,6 +20,7 @@
                 <!-- <li><a href="/joke/edit">Add a new Joke</a></li> -->
 
                 <?php if ($loggedIn): ?>
+                    <li><a href="/profile/edit">Profile</a></li>
                     <li class="logout"><a href="/auth/logout">Log out</a></li>
                 <?php else: ?>
                     <li class="login"><a href="/auth/login">Log in</a></li>

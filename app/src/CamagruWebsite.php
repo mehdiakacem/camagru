@@ -34,7 +34,7 @@ class CamagruWebsite implements \Core\Website
             '\Models\User',
             []
         );
-        $this->authentication = new \Core\Authentication($this->usersModel, 'email', 'password');
+        $this->authentication = new \Core\Authentication($this->usersModel, 'name', 'password');
 
         $this->imagesModel = new \Core\Model(
             $pdo,
@@ -72,24 +72,12 @@ class CamagruWebsite implements \Core\Website
                 $this->imagesModel,
             ),
             'auth' => new Controllers\AuthController($this->authentication, $this->usersModel),
+            'profile' => new Controllers\ProfileController($this->authentication, $this->usersModel),
             // 'author' => new \Ijdb\Controllers\Author($this->authorsTable),
         ];
 
         return $controllers[$controllerName] ?? null;
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     public function checkLogin(string $uri): ?string
     {
