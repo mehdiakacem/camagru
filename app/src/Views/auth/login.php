@@ -13,6 +13,6 @@
     <?php
     endif;
     ?>
+    <p><a class="register" href="/auth/forgotpassword">Forgot password</a></p>
 </form>
-
 <p><a class="register" href="/auth/signup">Sign up</a></p>

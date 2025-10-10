@@ -17,6 +17,8 @@ class User
     public string $password;
     public bool $is_verified;
     public ?string $verification_token;
+    public ?string $reset_token;
+    public ?string $reset_token_expir;
 
     public ?int $permissions;
 

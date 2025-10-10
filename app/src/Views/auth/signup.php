@@ -1,6 +1,6 @@
 <form action="" method="post">
     <label for="email">Email</label>
-    <input name="user[email]" id="email" type="text" value="<?= $user['email'] ?? '' ?>">
+    <input name="user[email]" id="email" type="email" value="<?= $user['email'] ?? '' ?>">
 
     <label for="name">Username</label>
     <input name="user[name]" id="name" type="text" value="<?= $user['name'] ?? '' ?>">

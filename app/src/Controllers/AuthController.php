@@ -128,7 +128,7 @@ class AuthController
         ];
     }
 
-    public function verify(string $token)
+    public function verify(?string $token = null)
     {
         if (!$token) {
             return [
@@ -213,5 +213,216 @@ class AuthController
     {
         $this->authentication->logout();
         header('location: /');
+    }
+
+    public function forgotPassword()
+    {
+        return [
+            'view' => 'auth/forgotPassword.php',
+            'title' => 'Forgot Password'
+        ];
+    }
+
+    public function forgotPasswordSubmit()
+    {
+        $email = $_POST['email'] ?? '';
+        $errors = [];
+
+        if (empty($email)) {
+            $errors[] = 'Please enter your email address';
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Invalid email address';
+        }
+
+        if (!empty($errors)) {
+            return [
+                'view' => 'auth/forgot-password.php',
+                'title' => 'Forgot Password',
+                'variables' => [
+                    'errors' => $errors,
+                    'email' => $email
+                ]
+            ];
+        }
+
+        $users = $this->usersModel->find('email', strtolower($email));
+
+        $successMessage = 'If an account exists with this email,
+             you will receive password reset instructions shortly.';
+
+        if (!empty($users)) {
+            $user = $users[0];
+
+            // Generate password reset token
+            $resetToken = bin2hex(random_bytes(32));
+            $user->reset_token = $resetToken;
+
+            // Update user with reset token
+            $this->usersModel->save((array)$user);
+
+            // Send password reset email
+            $base_url = $_ENV['APP_URL'] ?? 'http://localhost';
+            $reset_link = $base_url . "/auth/resetpassword/" . $resetToken;
+
+            $to = $user->email;
+            $subject = "Reset your Camagru password";
+            $message = "
+                <html>
+                <head>
+                    <title>Reset Your Password</title>
+                </head>
+                <body>
+                    <h2>Password Reset Request</h2>
+                    <p>Hi {$user->name},</p>
+                    <p>We received a request to reset your password. Click the link below to set a new password:</p>
+                    <p><a href='{$reset_link}'>Reset My Password</a></p>
+                    <p>Or copy and paste this link into your browser:</p>
+                    <p>{$reset_link}</p>
+                    <p>If you did not request a password reset, please ignore this email.</p>
+                </body>
+                </html>";
+
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
+            $headers .= "From: Camagru <noreply@camagru.com>" . "\r\n";
+
+            mail($to, $subject, $message, $headers);
+        }
+
+        return [
+            'view' => 'auth/forgotPassword.php',
+            'title' => 'Forgot Password',
+            'variables' => [
+                'success' => true,
+                'message' => $successMessage
+            ]
+        ];
+    }
+
+    public function resetPassword(?string $token = null)
+    {
+        if (!$token) {
+            return [
+                'view' => 'auth/resetPassword.php',
+                'title' => 'Reset Password',
+                'variables' => [
+                    'error' => 'Invalid reset link. No token provided.',
+                    'invalidToken' => true
+                ]
+            ];
+        }
+
+        $users = $this->usersModel->find('reset_token', $token);
+        if (empty($users)) {
+            return [
+                'view' => 'auth/resetPassword.php',
+                'title' => 'Reset Password',
+                'variables' => [
+                    'error' => 'Invalid reset link. Please request a new one.',
+                    'invalidToken' => true
+                ]
+            ];
+        }
+
+        $user = $users[0];
+
+        // Token is valid - show reset form
+        return [
+            'view' => 'auth/resetPassword.php',
+            'title' => 'Reset Password',
+            'variables' => [
+                'token' => $token,
+                'email' => $user->email
+            ]
+        ];
+    }
+
+    public function resetPasswordSubmit(string $token)
+    {
+        $password = $_POST['password'] ?? '';
+        $passwordConfirm = $_POST['password_confirm'] ?? '';
+        $errors = [];
+
+        // Validate token
+        if (empty($token)) {
+            return [
+                'view' => 'auth/resetPassword.php',
+                'title' => 'Reset Password',
+                'variables' => [
+                    'error' => 'Invalid request',
+                    'invalidToken' => true
+                ]
+            ];
+        }
+
+        // Find user by token
+        $users = $this->usersModel->find('reset_token', $token);
+
+        if (empty($users)) {
+            return [
+                'view' => 'auth/resetPassword.php',
+                'title' => 'Reset Password',
+                'variables' => [
+                    'error' => 'Invalid or expired reset link',
+                    'invalidToken' => true
+                ]
+            ];
+        }
+
+        $user = $users[0];
+
+        // Validate password
+        if (empty($password)) {
+            $errors[] = 'Password cannot be blank';
+        } else {
+            $passwordValidation = \Core\PasswordValidator::validate($password);
+            if ($passwordValidation['valid'] !== true) {
+                $errors = array_merge($errors, $passwordValidation['errors']);
+            }
+        }
+
+        // Validate password confirmation
+        if ($password !== $passwordConfirm) {
+            $errors[] = 'Passwords do not match';
+        }
+
+        if (!empty($errors)) {
+            return [
+                'view' => 'auth/resetPassword.php',
+                'title' => 'Reset Password',
+                'variables' => [
+                    'errors' => $errors,
+                    'token' => $token,
+                    'email' => $user->email
+                ]
+            ];
+        }
+
+        // All validations passed - update password
+        try {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $user->password = $hashedPassword;
+            $user->reset_token = null;
+            $this->usersModel->save((array)$user);
+
+            return [
+                'view' => 'auth/resetPassword-success.php',
+                'title' => 'Password Reset Successful',
+                'variables' => [
+                    'email' => $user->email
+                ]
+            ];
+        } catch (\Exception $e) {
+            return [
+                'view' => 'auth/resetPassword.php',
+                'title' => 'Reset Password',
+                'variables' => [
+                    'errors' => ['An error occurred. Please try again.'],
+                    'token' => $token,
+                    'email' => $user->email
+                ]
+            ];
+        }
     }
 }
