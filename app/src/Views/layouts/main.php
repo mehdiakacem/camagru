@@ -13,12 +13,7 @@
         <div class="nav-container">
             <a href="/" class="logo">Camagru</a>
             <ul class="nav-menu">
-                <li><a href="/images/list">Gallery</a></li>
-                <!-- <li><a href="/joke/list">Editor</a></li>
-                <li><a href="/joke/list">Profile</a></li> -->
-
-                <!-- <li><a href="/joke/edit">Add a new Joke</a></li> -->
-
+                <li><a href="/gallery">Gallery</a></li>
                 <?php if ($loggedIn): ?>
                     <li><a href="/profile/edit">Profile</a></li>
                     <li class="logout"><a href="/auth/logout">Log out</a></li>

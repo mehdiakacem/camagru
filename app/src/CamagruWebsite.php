@@ -19,10 +19,6 @@ class CamagruWebsite implements \Core\Website
             $pdo = new PDO("mysql:dbname=$dbname;host=$host", $user, $pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
-            // $query = $pdo->query('SHOW VARIABLES LIKE "version"');
-            // $row = $query->fetch();
-            // echo '✅ Connected successfully<br>';
-            // echo 'MySQL version: ' . htmlspecialchars($row['Value']);
         } catch (PDOException $e) {
             echo '❌ Connection failed: ' . htmlspecialchars($e->getMessage());
         }
@@ -35,22 +31,6 @@ class CamagruWebsite implements \Core\Website
             []
         );
         $this->authentication = new \Core\Authentication($this->usersModel, 'name', 'password');
-
-        $this->imagesModel = new \Core\Model(
-            $pdo,
-            'images',
-            'id',
-            '\Models\Image',
-            []
-        );
-        // $this->categoriesTable = new \Ninja\DatabaseTable(
-        //     $pdo,
-        //     'category',
-        //     'id',
-        //     '\Ijdb\Entity\Category',
-        //     [&$this->jokesTable, &$this->jokeCategoriesTable]
-        // );
-        // $this->jokeCategoriesTable = new \Ninja\DatabaseTable($pdo, 'joke_category', 'categoryId');
     }
 
     public function getLayoutVariables(): array
@@ -68,12 +48,8 @@ class CamagruWebsite implements \Core\Website
     public function getController(string $controllerName): ?object
     {
         $controllers = [
-            'images' => new Controllers\ImagesController(
-                $this->imagesModel,
-            ),
             'auth' => new Controllers\AuthController($this->authentication, $this->usersModel),
             'profile' => new Controllers\ProfileController($this->authentication, $this->usersModel),
-            // 'author' => new \Ijdb\Controllers\Author($this->authorsTable),
         ];
 
         return $controllers[$controllerName] ?? null;
