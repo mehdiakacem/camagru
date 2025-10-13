@@ -19,6 +19,7 @@ class User
     public ?string $verification_token;
     public ?string $reset_token;
     public ?string $reset_token_expir;
+    public bool $email_notifications;
 
     public ?int $permissions;
 

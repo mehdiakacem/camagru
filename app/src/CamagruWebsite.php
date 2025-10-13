@@ -1,5 +1,9 @@
 <?php
 
+use Controllers\AuthController;
+use Controllers\ProfileController;
+use Controllers\GalleryController;
+
 class CamagruWebsite implements \Core\Website
 {
     private \Core\Authentication $authentication;
@@ -48,8 +52,9 @@ class CamagruWebsite implements \Core\Website
     public function getController(string $controllerName): ?object
     {
         $controllers = [
-            'auth' => new Controllers\AuthController($this->authentication, $this->usersModel),
-            'profile' => new Controllers\ProfileController($this->authentication, $this->usersModel),
+            'auth' => new AuthController($this->authentication, $this->usersModel),
+            'profile' => new ProfileController($this->authentication, $this->usersModel),
+            'gallery' => new GalleryController(),
         ];
 
         return $controllers[$controllerName] ?? null;

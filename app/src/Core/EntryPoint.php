@@ -19,10 +19,14 @@ class EntryPoint
                 $output = $this->loadView('home.php', []);
             } else {
                 $route = explode('/', $uri);
-
+                
                 $controllerName = array_shift($route);
                 $action = array_shift($route);
 
+                if (!isset($action) || strlen($action) == 0) {
+                    $action = 'index';
+                }
+                
                 $this->website->checkLogin($controllerName . '/' . $action);
 
                 if ($method === 'POST') {
