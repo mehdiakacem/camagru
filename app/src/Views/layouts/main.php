@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/gallery.css">
     <title><?= $title ?></title>
 </head>
 

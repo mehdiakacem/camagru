@@ -35,6 +35,13 @@ class CamagruWebsite implements \Core\Website
             []
         );
         $this->authentication = new \Core\Authentication($this->usersModel, 'name', 'password');
+        $this->imagesModel = new \Core\Model(
+            $pdo,
+            'images',
+            'id',
+            '\Models\Image',
+            [$this->usersModel]
+        );
     }
 
     public function getLayoutVariables(): array
@@ -54,12 +61,12 @@ class CamagruWebsite implements \Core\Website
         $controllers = [
             'auth' => new AuthController($this->authentication, $this->usersModel),
             'profile' => new ProfileController($this->authentication, $this->usersModel),
-            'gallery' => new GalleryController(),
+            'gallery' => new GalleryController($this->imagesModel),
         ];
 
         return $controllers[$controllerName] ?? null;
     }
-    
+
     public function checkLogin(string $uri): ?string
     {
         // $restrictedPages = [
