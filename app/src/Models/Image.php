@@ -15,7 +15,7 @@ class Image
     public function getAuthor()
     {
         if (empty($this->user)) {
-            $this->user = $this->usersModel->find('id', $this->user_id)[0];
+            $this->user = $this->usersModel->findById($this->user_id);
         }
 
         return $this->user;

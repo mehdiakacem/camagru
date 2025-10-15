@@ -64,7 +64,8 @@ nav {
   margin: 0 auto;
 }
 
-.content p {
+.intro,
+.help-text {
   color: #666;
   line-height: 1.6;
   margin-bottom: 15px;
@@ -83,6 +84,3 @@ footer {
   color: #a3a7ac;
   font-size: 14px;
 }
-
-
-

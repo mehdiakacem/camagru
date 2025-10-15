@@ -7,10 +7,10 @@ use Controllers\GalleryController;
 class CamagruWebsite implements \Core\Website
 {
     private \Core\Authentication $authentication;
-    private ?\Core\Model $usersModel;
-    private ?\Core\Model $imagesModel;
-    // private ?\Ninja\DatabaseTable $categoriesTable;
-    // private ?\Ninja\DatabaseTable $jokeCategoriesTable;
+    private \Core\Model $usersModel;
+    private \Core\Model $imagesModel;
+    private \Core\Model $likesModel;
+    private \Core\Model $commentsModel;
 
     public function __construct()
     {
@@ -42,6 +42,22 @@ class CamagruWebsite implements \Core\Website
             '\Models\Image',
             [$this->usersModel]
         );
+
+        $this->likesModel = new \Core\Model(
+            $pdo,
+            'likes',
+            'id',
+            '\stdClass',
+            []
+        );
+
+        $this->commentsModel = new \Core\Model(
+            $pdo,
+            'comments',
+            'id',
+            '\stdClass',
+            []
+        );
     }
 
     public function getLayoutVariables(): array
@@ -61,7 +77,13 @@ class CamagruWebsite implements \Core\Website
         $controllers = [
             'auth' => new AuthController($this->authentication, $this->usersModel),
             'profile' => new ProfileController($this->authentication, $this->usersModel),
-            'gallery' => new GalleryController($this->imagesModel),
+            'gallery' => new GalleryController(
+                $this->authentication,
+                $this->imagesModel,
+                $this->usersModel,
+                $this->likesModel,
+                $this->commentsModel
+            ),
         ];
 
         return $controllers[$controllerName] ?? null;

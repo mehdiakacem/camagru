@@ -11,7 +11,7 @@ class Authentication
 
     public function login(string $username, string $password): bool
     {
-        $user = $this->users->find($this->usernameColumn, strtolower($username));
+        $user = $this->users->findByColumn($this->usernameColumn, strtolower($username));
         if (!empty($user) && password_verify($password, $user[0]->{$this->passwordColumn})) {
             session_regenerate_id();
             $_SESSION['username'] = $username;
@@ -28,7 +28,7 @@ class Authentication
             return false;
         }
 
-        $user = $this->users->find($this->usernameColumn, strtolower($_SESSION['username']));
+        $user = $this->users->findByColumn($this->usernameColumn, strtolower($_SESSION['username']));
 
         if (!empty($user) && $user[0]->{$this->passwordColumn} === $_SESSION['password']) {
             return true;
@@ -47,7 +47,7 @@ class Authentication
     public function getUser(): ?object
     {
         if ($this->isLoggedIn()) {
-            return $this->users->find($this->usernameColumn, strtolower($_SESSION['username']))[0];
+            return $this->users->findByColumn($this->usernameColumn, strtolower($_SESSION['username']))[0];
         } else {
             return null;
         }

@@ -12,13 +12,19 @@ class Model
         private array $constructorArgs = []
     ) {}
 
-    public function find(string $column, string $value, $orderBy = null, int $limit = 0)
+    public function findById(int $id)
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id'
+        );
+        $stmt->execute(['id' => $id]);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
+        return $stmt->fetch();
+    }
+
+    public function findByColumn(string $column, string $value, $orderBy = null, int $limit = 0)
     {
         $query = 'SELECT * FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
-
-        $values = [
-            'value' => $value
-        ];
 
         if ($orderBy != null) {
             $query .= ' ORDER BY ' . $orderBy;
@@ -29,7 +35,7 @@ class Model
         }
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute($values);
+        $stmt->execute(['value' => $value]);
 
         return $stmt->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
     }
@@ -157,5 +163,21 @@ class Model
         }
 
         return $values;
+    }
+
+    public function findMultiple(array $conditions)
+    {
+        $query = 'SELECT * FROM `' . $this->table . '` WHERE ';
+        $whereClauses = [];
+
+        foreach ($conditions as $column => $value) {
+            $whereClauses[] = '`' . $column . '` = :' . $column;
+        }
+
+        $query .= implode(' AND ', $whereClauses);
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($conditions);
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, $this->className, $this->constructorArgs);
     }
 }

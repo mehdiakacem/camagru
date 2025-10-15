@@ -39,7 +39,7 @@ class AuthController
             $errors[] = 'Invalid email address';
         } else {
             $user['email'] = strtolower($user['email']);
-            if (count($this->usersModel->find('email', $user['email'])) > 0) {
+            if (count($this->usersModel->findbyColumn('email', $user['email'])) > 0) {
                 $errors[] = 'That email address is already registered';
             }
         }
@@ -48,7 +48,7 @@ class AuthController
             $errors[] = 'Username cannot be blank';
         } else {
 
-            if (count($this->usersModel->find('name', $user['name'])) > 0) {
+            if (count($this->usersModel->findbyColumn('name', $user['name'])) > 0) {
                 $errors[] = 'That username is already registered';
             }
         }
@@ -141,7 +141,7 @@ class AuthController
             ];
         }
 
-        $users = $this->usersModel->find('verification_token', $token);
+        $users = $this->usersModel->findbyColumn('verification_token', $token);
 
         if (count($users) === 0) {
             return [
@@ -180,7 +180,7 @@ class AuthController
         $success = $this->authentication->login($_POST['name'], $_POST['password']);
 
         if ($success) {
-            $user = $this->usersModel->find('name', strtolower($_POST['name']))[0];
+            $user = $this->usersModel->findByColumn('name', strtolower($_POST['name']))[0];
             if (!$user->is_verified) {
                 $this->authentication->logout();
                 return [
@@ -245,7 +245,7 @@ class AuthController
             ];
         }
 
-        $users = $this->usersModel->find('email', strtolower($email));
+        $users = $this->usersModel->findByColumn('email', strtolower($email));
 
         $successMessage = 'If an account exists with this email,
              you will receive password reset instructions shortly.';
@@ -312,7 +312,7 @@ class AuthController
             ];
         }
 
-        $users = $this->usersModel->find('reset_token', $token);
+        $users = $this->usersModel->findByColumn('reset_token', $token);
         if (empty($users)) {
             return [
                 'view' => 'auth/resetPassword.php',
@@ -356,7 +356,7 @@ class AuthController
         }
 
         // Find user by token
-        $users = $this->usersModel->find('reset_token', $token);
+        $users = $this->usersModel->findByColumn('reset_token', $token);
 
         if (empty($users)) {
             return [
