@@ -74,6 +74,21 @@
                 </div>
             </div>
 
+            <div class="form-section">
+                <h3>Notification Preferences</h3>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input
+                            type="checkbox"
+                            id="email_notifications"
+                            name="email_notifications"
+                            <?= ($user->email_notifications ?? true) ? 'checked' : '' ?>>
+                        <span>Email me when someone comments on my images</span>
+                    </label>
+                </div>
+            </div>
+
             <div class="form-section password-verify">
                 <h3>Verify Your Identity</h3>
                 <p class="help-text required-note">Current password is required to save any changes</p>
@@ -84,8 +99,7 @@
                         type="password"
                         id="current_password"
                         name="current_password"
-                        placeholder="Enter your current password"
-                        required>
+                        placeholder="Enter your current password">
                 </div>
             </div>
 
@@ -245,5 +259,78 @@
 
     .btn-link:hover {
         text-decoration: underline;
+    }
+
+    .checkbox-group {
+        margin-bottom: 15px;
+    }
+
+    .checkbox-label {
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        font-weight: normal !important;
+        padding: 12px;
+        transition: background-color 0.2s;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+        /* Remove default styling */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        /* Custom styling */
+        border: 2px solid #bdbdbd;
+        background-color: white;
+        position: relative;
+        transition: all 0.2s;
+        flex-shrink: 0;
+        /* Prevent checkbox from shrinking */
+    }
+
+    /* Checkbox hover state */
+    .checkbox-label input[type="checkbox"]:hover {
+        border-color: #2196f3;
+    }
+
+    /* Checkbox focus state */
+    .checkbox-label input[type="checkbox"]:focus {
+        outline: none;
+        border-color: #2196f3;
+        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+
+    /* Checkbox checked state */
+    .checkbox-label input[type="checkbox"]:checked {
+        background-color: #2196f3;
+        border-color: #2196f3;
+    }
+
+    /* Checkmark icon */
+    .checkbox-label input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .checkbox-label span {
+        color: #333;
+        font-size: 15px;
+        line-height: 1.5;
+        user-select: none;
+    }
+
+    .checkbox-label:hover {
+        background-color: #f5f5f5;
     }
 </style>

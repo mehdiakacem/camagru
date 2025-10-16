@@ -48,6 +48,7 @@ class ProfileController
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+        $emailNotifications = isset($_POST['email_notifications']) ? 1 : 0;
 
         // Validate current password if user wants to change anything
         if (!empty($currentPassword)) {
@@ -55,13 +56,21 @@ class ProfileController
                 $errors[] = 'Current password is incorrect';
             }
         } else {
-            // Current password is required for any changes
-            if (
-                $newUsername !== $currentUser->name ||
-                $newEmail !== $currentUser->email ||
-                !empty($newPassword)
-            ) {
-                $errors[] = 'Current password is required to make changes';
+            // Current password is required for any changes except notification preference
+            $notificationOnlyChange = (
+                $newUsername === $currentUser->name &&
+                $newEmail === $currentUser->email &&
+                empty($newPassword) &&
+                $emailNotifications !== ($currentUser->email_notifications ?? true)
+            );
+            if (!$notificationOnlyChange) {
+                if (
+                    $newUsername !== $currentUser->name ||
+                    $newEmail !== $currentUser->email ||
+                    !empty($newPassword)
+                ) {
+                    $errors[] = 'Current password is required to make changes';
+                }
             }
         }
 
@@ -70,7 +79,7 @@ class ProfileController
             $errors[] = 'Username cannot be blank';
         } elseif ($newUsername !== $currentUser->name) {
             // Check if username is already taken
-            $existingUsers = $this->usersModel->find('name', $newUsername);
+            $existingUsers = $this->usersModel->findByColumn('name', $newUsername);
             if (!empty($existingUsers)) {
                 $errors[] = 'Username is already taken';
             }
@@ -83,7 +92,7 @@ class ProfileController
             $errors[] = 'Invalid email address';
         } elseif ($newEmail !== $currentUser->email) {
             // Check if email is already taken
-            $existingUsers = $this->usersModel->find('email', strtolower($newEmail));
+            $existingUsers = $this->usersModel->findByColumn('email', strtolower($newEmail));
             if (!empty($existingUsers)) {
                 $errors[] = 'Email is already registered';
             }
@@ -114,6 +123,7 @@ class ProfileController
                 'is_verified' => $currentUser->is_verified,
                 'verification_token' => $currentUser->verification_token,
                 'reset_token' => $currentUser->reset_token,
+                'email_notifications' => $emailNotifications,
             ];
 
             // Update password if new one provided
@@ -139,7 +149,6 @@ class ProfileController
 
                 // Get updated user data
                 $currentUser = $this->authentication->getUser();
-
             } catch (\Exception $e) {
                 $errors[] = 'Failed to update profile. Please try again.';
             }
