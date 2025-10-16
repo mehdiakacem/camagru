@@ -126,9 +126,9 @@
 
 .comments-list {
   margin-bottom: 20px;
-  /* max-height: 200px;
+  max-height: 200px;
   overflow-y: auto;
-  border-top: 1px solid #f0f0f0; */
+  border-top: 1px solid #f0f0f0;
 }
 
 .comment {
@@ -250,3 +250,25 @@
   color: #666;
   font-weight: 600;
 }
+
+/* Responsive */
+/* @media (max-width: 768px) {
+  .gallery-container {
+    padding: 15px;
+    display: none;
+  }
+
+  .gallery-container h1 {
+    font-size: 24px;
+  }
+
+  .image-wrapper {
+    min-height: 200px;
+    max-height: 400px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+} */

@@ -10,11 +10,10 @@ class EntryPoint
     {
         try {
             $this->checkUri($uri, $method);
-
             if ($uri == '') {
                 // $uri = $this->website->getDefaultRoute();
                 $title = 'Camagru';
-
+                
                 $variables = $page['variables'] ?? [];
                 $output = $this->loadView('home.php', []);
             } else {
@@ -22,6 +21,9 @@ class EntryPoint
                 
                 $controllerName = array_shift($route);
                 $action = array_shift($route);
+                // print_r($controllerName);
+                // print("\n\n");
+                // print_r($action);
 
                 if (!isset($action) || strlen($action) == 0) {
                     $action = 'index';

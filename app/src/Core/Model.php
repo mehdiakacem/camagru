@@ -154,6 +154,21 @@ class Model
         $stmt->execute($values);
     }
 
+    public function deleteWhere(array $conditions)
+    {
+        $query = 'DELETE FROM `' . $this->table . '` WHERE ';
+        $whereClauses = [];
+
+        foreach ($conditions as $column => $value) {
+            $whereClauses[] = '`' . $column . '` = :' . $column;
+        }
+
+        $query .= implode(' AND ', $whereClauses);
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($conditions);
+    }
+
     private function processDates($values)
     {
         foreach ($values as $key => $value) {

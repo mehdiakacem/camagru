@@ -72,6 +72,36 @@ class GalleryController
         ];
     }
 
+    public function likeSubmit(string $imageId)
+    {
+        if (!$this->authentication->isLoggedIn()) {
+            header('Location: /auth/login');
+            exit();
+        }
+
+        $user = $this->authentication->getUser();
+
+        // Check if already liked
+        if ($this->hasUserLiked($imageId, $user->id)) {
+            // Unlike
+            $this->likesModel->deleteWhere([
+                'image_id' => $imageId,
+                'user_id' => $user->id
+            ]);
+        } else {
+            // Like
+            $this->likesModel->save([
+                'image_id' => $imageId,
+                'user_id' => $user->id
+            ]);
+        }
+
+        // Redirect back to gallery
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/gallery';
+        header('Location: ' . $referer);
+        exit();
+    }
+
     private function countLikes(int $imageId): int
     {
         return count($this->likesModel->findByColumn('image_id', $imageId));
