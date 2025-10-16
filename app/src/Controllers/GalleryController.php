@@ -102,6 +102,50 @@ class GalleryController
         exit();
     }
 
+    public function commentSubmit(string $imageId)
+    {
+        if (!$this->authentication->isLoggedIn()) {
+            header('Location: /auth/login');
+            exit();
+        }
+
+        $user = $this->authentication->getUser();
+        $comment = trim($_POST['comment'] ?? '');
+
+        if (empty($comment)) {
+            $_SESSION['comment_error'] = 'Comment cannot be empty';
+            header('Location: /gallery?page=' . ($_GET['page'] ?? 1));
+            exit();
+        }
+
+        // Save comment
+        $this->commentsModel->save([
+            'image_id' => $imageId,
+            'user_id' => $user->id,
+            'comment' => $comment
+        ]);
+
+        // Send notification to image owner
+        $image = $this->imagesModel->findById($imageId);
+        if ($image) {
+            $imageOwner = $this->usersModel->findById($image->user_id);
+
+            // Only send if not commenting on own image and owner has notifications enabled
+            if (
+                $imageOwner &&
+                $imageOwner->id !== $user->id &&
+                ($imageOwner->email_notifications ?? true)
+            ) {
+                $this->sendCommentNotification($imageOwner, $user, $image);
+            }
+        }
+
+        // Redirect back to gallery
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/gallery';
+        header('Location: ' . $referer);
+        exit();
+    }
+
     private function countLikes(int $imageId): int
     {
         return count($this->likesModel->findByColumn('image_id', $imageId));
@@ -134,5 +178,34 @@ class GalleryController
         }
 
         return $enrichedComments;
+    }
+
+    private function sendCommentNotification($imageOwner, $commenter, $image)
+    {
+        $base_url = $_ENV['APP_URL'] ?? 'http://localhost';
+        $gallery_link = $base_url . "/gallery";
+
+        $to = $imageOwner->email;
+        $subject = "New comment on your Camagru image";
+        $message = "
+            <html>
+            <head>
+                <title>New Comment</title>
+            </head>
+            <body>
+                <h2>New Comment on Your Image</h2>
+                <p>Hi {$imageOwner->name},</p>
+                <p><strong>{$commenter->name}</strong> commented on your image.</p>
+                <p><a href='{$gallery_link}'>View in Gallery</a></p>
+                <p>If you don't want to receive these notifications, you can disable them in your profile settings.</p>
+            </body>
+            </html>
+        ";
+
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
+        $headers .= "From: Camagru <noreply@camagru.com>" . "\r\n";
+
+        mail($to, $subject, $message, $headers);
     }
 }
