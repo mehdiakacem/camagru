@@ -21,9 +21,6 @@ class EntryPoint
                 
                 $controllerName = array_shift($route);
                 $action = array_shift($route);
-                // print_r($controllerName);
-                // print("\n\n");
-                // print_r($action);
 
                 if (!isset($action) || strlen($action) == 0) {
                     $action = 'index';

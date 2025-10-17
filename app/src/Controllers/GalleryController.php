@@ -61,7 +61,7 @@ class GalleryController
         }
 
         return [
-            'view' => 'gallery.php',
+            'view' => 'gallery/index.php',
             'title' => 'Gallery',
             'variables' => [
                 'images' => $enrichedImages,

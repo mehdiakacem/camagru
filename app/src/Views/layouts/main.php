@@ -16,6 +16,7 @@
             <ul class="nav-menu">
                 <li><a href="/gallery">Gallery</a></li>
                 <?php if ($loggedIn): ?>
+                    <li><a href="/editor">Editor</a></li>
                     <li><a href="/profile/edit">Profile</a></li>
                     <li class="logout"><a href="/auth/logout">Log out</a></li>
                 <?php else: ?>

@@ -3,6 +3,7 @@
 use Controllers\AuthController;
 use Controllers\ProfileController;
 use Controllers\GalleryController;
+use Controllers\EditorController;
 
 class CamagruWebsite implements \Core\Website
 {
@@ -83,6 +84,11 @@ class CamagruWebsite implements \Core\Website
                 $this->usersModel,
                 $this->likesModel,
                 $this->commentsModel
+            ),
+            'editor' => new EditorController(
+                $this->authentication,
+                $this->imagesModel,
+                $this->usersModel
             ),
         ];
 
