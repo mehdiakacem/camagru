@@ -136,7 +136,7 @@ cd camagru
 # Build and start containers
 docker-compose up --build
 
-docker exec -it camagru-php-1 ./app/config/setup.php
+docker exec -it camagru-php-1 php /app/config/setup.php
 
 chmod -R 777 ./app/public/uploads
 
