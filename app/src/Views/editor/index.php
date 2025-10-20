@@ -1,6 +1,21 @@
 <link rel="stylesheet" href="/css/editor.css">
 
 <div class="editor-container">
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success">
+            <?= htmlspecialchars($_SESSION['success']) ?>
+            <?php unset($_SESSION['success']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-error">
+            <?= htmlspecialchars($_SESSION['error']) ?>
+            <?php unset($_SESSION['error']); ?>
+        </div>
+    <?php endif; ?>
+
     <div class="editor-layout">
         <!-- Main Editor Section -->
         <div class="editor-main">
@@ -75,6 +90,27 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
+            </div>
+        </div>
+        <!-- Sidebar - User's Images -->
+        <div class="editor-sidebar">
+            <h3>Your Images</h3>
+            <div class="user-images">
+                <?php if (empty($userImages)): ?>
+                    <p class="no-images">No images yet. Create your first one!</p>
+                <?php else: ?>
+                    <?php foreach ($userImages as $image): ?>
+                        <div class="image-item">
+                            <img src="/uploads/<?= htmlspecialchars($image->filename) ?>"
+                                alt="User image">
+                            <div class="image-actions">
+                                <button class="btn-delete" onclick="confirmDelete(<?= $image->id ?>)">
+                                Delete
+                                </button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
