@@ -19,8 +19,7 @@ $pdo->exec('
         is_verified BOOLEAN DEFAULT FALSE,
         verification_token VARCHAR(64),
         reset_token VARCHAR(64),
-        email_notifications BOOLEAN DEFAULT TRUE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        email_notifications BOOLEAN DEFAULT TRUE
     )
 ');
 

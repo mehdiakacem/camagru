@@ -18,7 +18,7 @@ class GalleryController
 
     public function index()
     {
-        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page'] > 1000 ? 1000 : (int)$_GET['page']) : 1;
         $offset = ($page - 1) * self::ITEMS_PER_PAGE;
 
         // Get total count for pagination

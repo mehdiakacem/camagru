@@ -207,8 +207,8 @@ function handleFileSelect(file) {
   }
 
   // Validate file size (5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    alert("File size must be less than 5MB");
+  if (file.size > 2 * 1024 * 1024) {
+    alert("File size must be less than 2MB");
     return;
   }
 
