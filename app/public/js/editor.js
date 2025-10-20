@@ -142,7 +142,7 @@ captureBtn.addEventListener("click", async () => {
     const formData = new FormData();
     formData.append("image", imageData);
     formData.append("overlay", selectedOverlay);
-
+    
     const response = await fetch("/editor/capture", {
       method: "POST",
       body: formData,
@@ -207,7 +207,7 @@ function handleFileSelect(file) {
   }
 
   // Validate file size (5MB)
-  if (file.size > 2 * 1024 * 1024) {
+  if (file.size > 1 * 1024 * 1024) {
     alert("File size must be less than 2MB");
     return;
   }
