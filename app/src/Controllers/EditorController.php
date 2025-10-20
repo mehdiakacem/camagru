@@ -170,6 +170,141 @@ class EditorController
         exit();
     }
 
+    public function uploadSubmit()
+    {
+        if (!$this->authentication->isLoggedIn()) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit();
+        }
+
+        $user = $this->authentication->getUser();
+
+        if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No file uploaded']);
+            exit();
+        }
+
+        $overlayFile = $_POST['overlay'] ?? '';
+        if (empty($overlayFile)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No overlay selected']);
+            exit();
+        }
+
+        try {
+            $file = $_FILES['image'];
+
+            // Validate file type
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($mimeType, $allowedTypes)) {
+                throw new \Exception('Invalid file type. Only JPEG, PNG, and GIF are allowed');
+            }
+
+            // Validate file size (max 5MB)
+            if ($file['size'] > 5 * 1024 * 1024) {
+                throw new \Exception('File size exceeds 5MB limit');
+            }
+
+            // Create image from uploaded file
+            switch ($mimeType) {
+                case 'image/jpeg':
+                    $baseImage = imagecreatefromjpeg($file['tmp_name']);
+                    break;
+                case 'image/png':
+                    $baseImage = imagecreatefrompng($file['tmp_name']);
+                    break;
+                case 'image/gif':
+                    $baseImage = imagecreatefromgif($file['tmp_name']);
+                    break;
+            }
+
+            if ($baseImage === false) {
+                throw new \Exception('Failed to process uploaded image');
+            }
+
+            // Load overlay
+            $overlayPath = __DIR__ . '/../../public/overlays/' . basename($overlayFile);
+            if (!file_exists($overlayPath)) {
+                throw new \Exception('Overlay not found');
+            }
+
+            $overlay = imagecreatefrompng($overlayPath);
+            if ($overlay === false) {
+                throw new \Exception('Failed to load overlay');
+            }
+
+            // Get dimensions
+            $baseWidth = imagesx($baseImage);
+            $baseHeight = imagesy($baseImage);
+            $overlayWidth = imagesx($overlay);
+            $overlayHeight = imagesy($overlay);
+
+            // Resize overlay to match base image
+            $resizedOverlay = imagecreatetruecolor($baseWidth, $baseHeight);
+            imagealphablending($resizedOverlay, false);
+            imagesavealpha($resizedOverlay, true);
+
+            imagecopyresampled(
+                $resizedOverlay,
+                $overlay,
+                0,
+                0,
+                0,
+                0,
+                $baseWidth,
+                $baseHeight,
+                $overlayWidth,
+                $overlayHeight
+            );
+
+            // Merge images
+            imagealphablending($baseImage, true);
+            imagecopy($baseImage, $resizedOverlay, 0, 0, 0, 0, $baseWidth, $baseHeight);
+
+            // Generate unique filename
+            $filename = uniqid('img_', true) . '.png';
+            $uploadPath = __DIR__ . '/../../public/uploads/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $filepath = $uploadPath . $filename;
+
+            // Save merged image
+            if (!imagepng($baseImage, $filepath)) {
+                throw new \Exception('Failed to save image');
+            }
+
+            // Save to database
+            $this->imagesModel->save([
+                'user_id' => $user->id,
+                'filename' => $filename
+            ]);
+
+            // Clean up
+            imagedestroy($baseImage);
+            imagedestroy($overlay);
+            imagedestroy($resizedOverlay);
+
+            echo json_encode([
+                'success' => true,
+                'filename' => $filename,
+                'message' => 'Image uploaded and processed successfully'
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+        exit();
+    }
+
     public function delete(string $imageId)
     {
         if (!$this->authentication->isLoggedIn()) {
