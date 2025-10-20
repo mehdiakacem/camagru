@@ -138,7 +138,7 @@ docker-compose up --build
 
 docker exec -it camagru-php-1 php /app/config/setup.php
 
-chmod -R 777 ./app/public/uploads
+chmod -R 777 app/public/uploads
 
 # Access the app
 http://localhost:8080
